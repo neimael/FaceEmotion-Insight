@@ -1,4 +1,4 @@
-dlib==19.24.1
+dlib==19.24.1 --find-links https://piwheels.org/simple/dlib/
 matplotlib==3.8.1
 numpy==1.26.4
 opencv_contrib_python==4.9.0.80
