@@ -6,7 +6,7 @@ import numpy as np
 import os
 import tempfile
 import matplotlib.pyplot as plt
-import dlib
+# import dlib
 from tensorflow.keras.models import load_model
 import Extract_images_from_video as extract
 
@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-face_detector = dlib.get_frontal_face_detector()
+# face_detector = dlib.get_frontal_face_detector()
 
 try:
     emotion_model = load_model('fer2013_mini_XCEPTION.102-0.66.hdf5', compile=False)
