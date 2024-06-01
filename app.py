@@ -276,9 +276,12 @@ def main():
 
                 # Show resulting video
                 st.title("Resulting Video")
-                video_file_path = f"{output_emotions_vd}/{video_name}.mp4"
-                print(video_file_path)
-                st.video(video_file_path)
+                video_file_path = os.path.join(output_emotions_vd, f'{video_name}.mp4')
+
+                if os.path.exists(video_file_path):
+                    st.video(video_file_path)
+                else:
+                    st.error(f"Video file not found: {video_file_path}")
 
                 # Read emotion data from text file and display pie chart
                 emotion_data = {}
