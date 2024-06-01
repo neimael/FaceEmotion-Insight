@@ -66,10 +66,6 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
     output_path = os.path.join(output_video_folder, f'{video_name}.mp4')
     out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'avc1'), fps, (width, height))
 
-    if not out.isOpened():
-        print(f"Error: Could not open VideoWriter with path {output_path}")
-        return
-
     # Initialiser le dictionnaire pour compter les émotions
     total_emotions_count = {emotion: 0 for emotion in EMOTIONS}
     total_faces_detected = 0
