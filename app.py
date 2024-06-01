@@ -241,7 +241,7 @@ def main():
             output_extracted = f"Extracted_images/{video_name}"  # Output directory
             output_emotions = f"Emotions_detected/{video_name}"
             output_emotions_vd = "Emotions_videos"
-            # output_emotions_vd_ld = f"Emotions_videos/{video_name}"
+            output_emotions_vd_ld = f"Emotions_videos/{video_name_with_extension}"
             output_data_folder = 'Data_emotions'
             
             status_placeholder = st.empty()
@@ -278,7 +278,7 @@ def main():
                 # Show resulting video
                 st.title("Resulting Video")
                 # video_file_path = os.path.join(output_emotions_vd, f'{video_name}.mp4')
-                emotion_video_path = f"{output_emotions_vd}/{video_name}.mp4"
+                emotion_video_path = output_emotions_vd_ld
 
                 # video = os.listdir(output_emotions_vd_ld)
 
