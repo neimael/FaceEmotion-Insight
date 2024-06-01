@@ -8,6 +8,9 @@ import tempfile
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 import Extract_images_from_video as extract
+import Detect_emotions as emotions
+import detect_emotions_vd as emotions_vd
+from detect_emotions_vd import analyze_video_emotions
 
 # Configuration de la page
 st.set_page_config(
