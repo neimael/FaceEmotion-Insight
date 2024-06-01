@@ -64,7 +64,6 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
 
     # Créer un objet VideoWriter pour enregistrer la vidéo modifiée dans le dossier de sortie avec le même nom de fichier
     output_path = os.path.join(output_video_folder, f'{video_name}.mp4')
-    print(f"Saving output video to: {output_path}")  # Message de débogage
     out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'avc1'), fps, (width, height))
 
     # Initialiser le dictionnaire pour compter les émotions
@@ -95,19 +94,13 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
     out.release()
     cv2.destroyAllWindows()
 
-    print("Video processing complete.")  # Message de débogage
-
     # Calculer les pourcentages d'émotions
     percentages_emotions = {emotion: (count / total_faces_detected) * 100 if total_faces_detected > 0 else 0 for emotion, count in total_emotions_count.items()}
 
     # Enregistrer les résultats dans un fichier texte
     data_path = os.path.join(output_data_folder, f'{video_name}.txt')
-    print(f"Saving emotion data to: {data_path}")  # Message de débogage
     with open(data_path, 'w') as f:
         for emotion, percentage in percentages_emotions.items():
             f.write(f"{emotion}: {percentage:.2f}%\n")
 
     print("Émotions détectées, vidéo enregistrée et fichier de données créé avec succès.")
-
-
-
