@@ -65,7 +65,7 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
     # Créer un objet VideoWriter pour enregistrer la vidéo modifiée dans le dossier de sortie avec le même nom de fichier
     output_path = os.path.join(output_video_folder, f'{video_name}.mp4')
     out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
-    st.write(f"Emotion video path: {out}")
+    print(f"Emotion video path: {out}")
     # Initialiser le dictionnaire pour compter les émotions
     total_emotions_count = {emotion: 0 for emotion in EMOTIONS}
     total_faces_detected = 0
