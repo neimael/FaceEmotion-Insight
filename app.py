@@ -6,7 +6,6 @@ import numpy as np
 import os
 import tempfile
 import matplotlib.pyplot as plt
-# import dlib
 from tensorflow.keras.models import load_model
 import Extract_images_from_video as extract
 
@@ -17,17 +16,11 @@ st.set_page_config(
 )
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-# face_detector = dlib.get_frontal_face_detector()
 
 try:
     emotion_model = load_model('fer2013_mini_XCEPTION.102-0.66.hdf5', compile=False)
 except Exception as e:
     st.error(f"Error loading emotion detection model: {e}")
-
-# try:
-#     eye_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-# except Exception as e:
-#     st.error(f"Error loading eye predictor model: {e}")
 
 # Définir les émotions
 EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
@@ -61,41 +54,6 @@ def detect_faces(our_image):
     except Exception as e:
         st.error(f"Error detecting faces: {e}")
         return None, None
-
-# def detect_eyes(our_image):
-#     # Initialize the face detector and eye predictor
-#     face_detector = dlib.get_frontal_face_detector()
-#     eye_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-    
-#     # Convert the image to BGR format
-#     img = np.array(our_image.convert('RGB'))
-#     img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    
-#     # Convert the image to grayscale
-#     gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
-    
-#     # Detect faces in the grayscale image
-#     faces = face_detector(gray)
-    
-#     # Copy the original image to draw eyes on it
-#     img_with_eyes = img_bgr.copy()
-    
-#     # Loop through each detected face
-#     for face in faces:
-#         # Detect landmarks for the face
-#         landmarks = eye_predictor(gray, face)
-        
-#         # Loop through each landmark corresponding to eyes
-#         for n in range(36, 48):  # Landmark indices for eyes
-#             # Get the (x, y) coordinates of the landmark
-#             x, y = landmarks.part(n).x, landmarks.part(n).y
-#             # Draw a green circle at the landmark position
-#             cv2.circle(img_with_eyes, (x, y), 2, (0, 255, 0), -1)
-    
-#     # Convert the image back to RGB format
-#     img_with_eyes_rgb = cv2.cvtColor(img_with_eyes, cv2.COLOR_BGR2RGB)
-    
-#     return img_with_eyes_rgb
 
 def detect_emotions(our_image):
     new_img = np.array(our_image.convert('RGB'))
@@ -172,129 +130,124 @@ def main():
 
     activities = ["Face Detection", "Emotion Detection"]
     choice = st.sidebar.selectbox("Select Activity", activities)
-
     if choice == 'Face Detection':
         st.subheader("Face Detection")
 
         image_file = st.file_uploader("Upload Image", type=['jpg', 'png', 'jpeg'])
 
         if image_file is not None:
-    our_image = Image.open(image_file)
-    st.text("Original Image")
-    st.image(our_image)
+            our_image = Image.open(image_file)
+            st.text("Original Image")
+            st.image(our_image)
 
-    enhance_type = st.sidebar.radio("Enhance Type", ["Original", "Gray-Scale", "Contrast", "Brightness", "Blurring"])
-    if enhance_type == 'Gray-Scale':
-        new_img = np.array(our_image.convert('RGB'))
-        img = cv2.cvtColor(new_img, cv2.COLOR_RGB2GRAY)
-        st.image(img, channels='GRAY')
-    elif enhance_type == 'Contrast':
-        c_rate = st.sidebar.slider("Contrast", 0.5, 3.5)
-        enhancer = ImageEnhance.Contrast(our_image)
-        img_output = enhancer.enhance(c_rate)
-        st.image(img_output)
-    elif enhance_type == 'Brightness':
-        c_rate = st.sidebar.slider("Brightness", 0.5, 3.5)
-        enhancer = ImageEnhance.Brightness(our_image)
-        img_output = enhancer.enhance(c_rate)
-        st.image(img_output)
-    elif enhance_type == 'Blurring':
-        new_img = np.array(our_image.convert('RGB'))
-        blur_rate = st.sidebar.slider("Blurring", 0.5, 3.5)
-        img = cv2.cvtColor(new_img, cv2.COLOR_RGB2BGR)
-        blur_img = cv2.GaussianBlur(img, (11, 11), int(blur_rate))
-        blur_img = cv2.cvtColor(blur_img, cv2.COLOR_BGR2RGB)  # Convert back to RGB for display
-        st.image(blur_img)
+            enhance_type = st.sidebar.radio("Enhance Type", ["Original", "Gray-Scale", "Contrast", "Brightness", "Blurring"])
+            if enhance_type == 'Gray-Scale':
+                new_img = np.array(our_image.convert('RGB'))
+                img = cv2.cvtColor(new_img, cv2.COLOR_RGB2GRAY)
+                st.image(img, channels='GRAY')
+            elif enhance_type == 'Contrast':
+                c_rate = st.sidebar.slider("Contrast", 0.5, 3.5)
+                enhancer = ImageEnhance.Contrast(our_image)
+                img_output = enhancer.enhance(c_rate)
+                st.image(img_output)
+            elif enhance_type == 'Brightness':
+                c_rate = st.sidebar.slider("Brightness", 0.5, 3.5)
+                enhancer = ImageEnhance.Brightness(our_image)
+                img_output = enhancer.enhance(c_rate)
+                st.image(img_output)
+            elif enhance_type == 'Blurring':
+                new_img = np.array(our_image.convert('RGB'))
+                blur_rate = st.sidebar.slider("Blurring", 0.5, 3.5)
+                img = cv2.cvtColor(new_img, cv2.COLOR_RGB2BGR)
+                blur_img = cv2.GaussianBlur(img, (11, 11), int(blur_rate))
+                blur_img = cv2.cvtColor(blur_img, cv2.COLOR_BGR2RGB)  # Convert back to RGB for display
+                st.image(blur_img)
 
-    task = ["Faces", "Emotions", "Cannize", "Cartonize"]
-    feature_choice = st.sidebar.selectbox("Find Features", task)
-    if st.button("Process"):
-        if feature_choice == 'Faces':
-            result_img, result_faces = detect_faces(our_image)
-            st.image(result_img)
-            st.success(f"Found {len(result_faces)} faces")
-        elif feature_choice == 'Emotions':
-            result_img = detect_emotions(our_image)
-            st.image(result_img)
-        # elif feature_choice == 'Eyes':
-            # result_img = detect_eyes(our_image)
-            # st.image(result_img)
-        elif feature_choice == 'Cartonize':
-            result_img = cartonize_image(our_image)
-            st.image(result_img)
-        elif feature_choice == 'Cannize':
-            result_canny = cannize_image(our_image)
-            st.image(result_canny)
+            task = ["Faces", "Emotions", "Cannize", "Cartonize"]
+            feature_choice = st.sidebar.selectbox("Find Features", task)
+            if st.button("Process"):
+                if feature_choice == 'Faces':
+                    result_img, result_faces = detect_faces(our_image)
+                    st.image(result_img)
+                    st.success(f"Found {len(result_faces)} faces")
+                elif feature_choice == 'Emotions':
+                    result_img = detect_emotions(our_image)
+                    st.image(result_img)
+                elif feature_choice == 'Cartonize':
+                    result_img = cartonize_image(our_image)
+                    st.image(result_img)
+                elif feature_choice == 'Cannize':
+                    result_canny = cannize_image(our_image)
+                    st.image(result_canny)
 
-elif choice == 'Emotion Detection':
-    st.subheader("Emotion Detection")
-    # Initialize session state if not already done
+    elif choice == 'Emotion Detection':
+        st.subheader("Emotion Detection")
+        # Initialize session state if not already done
 
-    if 'process_running' not in st.session_state:
-        st.session_state.process_running = False
-        st.session_state.images_extracted = False
-    
-    uploaded_file, video_name, video_name_with_extension, video_path = upload_video()
-
-    if uploaded_file is not None and video_name_with_extension is not None:
-        st.write(f"Selected video name: {video_name_with_extension}")
-        output_extracted = f"Extracted_images/{video_name}"  # Output directory
-        output_emotions = f"Emotions_detected/{video_name}"
-        output_emotions_vd = "Emotions_videos"
-        output_data_folder = 'Data_emotions'
+        if 'process_running' not in st.session_state:
+            st.session_state.process_running = False
+            st.session_state.images_extracted = False
         
-        status_placeholder = st.empty()
+        uploaded_file, video_name, video_name_with_extension, video_path = upload_video()
 
-        # Check if images have been extracted already
-        if not st.session_state.images_extracted:
-            status_placeholder.write(":hourglass_flowing_sand: Please wait while we process your video...")
-            extract.extract_images(video_path, output_extracted)
-            st.session_state.images_extracted = True
-            status_placeholder.empty()
-
-        if st.sidebar.button("Process !"):
-            # Create a placeholder for the status message
-            status_placeholder.write(":hourglass_flowing_sand: Please wait while we Detect Emotions of your Students ...")
-            # Processing the video
-            import Detect_emotions as emotions
-            import detect_emotions_vd as emotions_vd
-            emotions.process_images(output_extracted, output_emotions)
-            emotions_vd.analyze_video_emotions(video_path, output_emotions_vd, output_data_folder)
+        if uploaded_file is not None and video_name_with_extension is not None:
+            st.write(f"Selected video name: {video_name_with_extension}")
+            output_extracted = f"Extracted_images/{video_name}"  # Output directory
+            output_emotions = f"Emotions_detected/{video_name}"
+            output_emotions_vd = "Emotions_videos"
+            output_data_folder = 'Data_emotions'
             
-            status_placeholder.empty()
+            status_placeholder = st.empty()
 
-            # Show images of detected emotions in a 3x3 grid
-            st.title("Detected Emotions")
-            image_files = os.listdir(output_emotions)
-            num_images = len(image_files)
-            num_cols = 3
-            num_rows = (num_images + num_cols - 1) // num_cols
+            # Check if images have been extracted already
+            if not st.session_state.images_extracted:
+                status_placeholder.write(":hourglass_flowing_sand: Please wait while we process your video...")
+                extract.extract_images(video_path, output_extracted)
+                st.session_state.images_extracted = True
+                status_placeholder.empty()
 
-            columns = st.columns(num_cols)
-            for i in range(num_images):
-                columns[i % num_cols].image(f"Emotions_detected/{video_name}/{image_files[i]}", caption=image_files[i], use_column_width=True)
+            if st.sidebar.button("Process !"):
+                # Create a placeholder for the status message
+                status_placeholder.write(":hourglass_flowing_sand: Please wait while we Detect Emotions of your Students ...")
+                # Processing the video
+                import Detect_emotions as emotions
+                import detect_emotions_vd as emotions_vd
+                emotions.process_images(output_extracted, output_emotions)
+                emotions_vd.analyze_video_emotions(video_path, output_emotions_vd, output_data_folder)
+                
+                status_placeholder.empty()
 
-            # Show resulting video
-            st.title("Resulting Video")
-            video_file_path = os.path.join(output_emotions_vd, f'{video_name}.mp4')
+                # Show images of detected emotions in a 3x3 grid
+                st.title("Detected Emotions")
+                image_files = os.listdir(output_emotions)
+                num_images = len(image_files)
+                num_cols = 3
+                num_rows = (num_images + num_cols - 1) // num_cols
 
-            if os.path.exists(video_file_path):
-                st.video(video_file_path)
-            else:
-                st.error(f"Video file not found: {video_file_path}")
+                columns = st.columns(num_cols)
+                for i in range(num_images):
+                    columns[i % num_cols].image(f"Emotions_detected/{video_name}/{image_files[i]}", caption=image_files[i], use_column_width=True)
 
-            # Read emotion data from text file and display pie chart
-            emotion_data = {}
-            emotion_file_path = f"{output_data_folder}/{video_name}.txt"
-            if os.path.exists(emotion_file_path):
-                with open(emotion_file_path, 'r') as file:
-                    for line in file:
-                        emotion, percentage = line.strip().split(': ')
-                        emotion_data[emotion] = float(percentage.strip('%'))
+                # Show resulting video
+                st.title("Resulting Video")
+                video_file_path = os.path.join(output_emotions_vd, f'{video_name}.mp4')
 
-                st.title("Emotion Distribution")
-                plot_emotion_pie_chart(emotion_data)
+                if os.path.exists(video_file_path):
+                    st.video(video_file_path)
+                else:
+                    st.error(f"Video file not found: {video_file_path}")
+
+                # Read emotion data from text file and display pie chart
+                emotion_data = {}
+                emotion_file_path = f"{output_data_folder}/{video_name}.txt"
+                if os.path.exists(emotion_file_path):
+                    with open(emotion_file_path, 'r') as file:
+                        for line in file:
+                            emotion, percentage = line.strip().split(': ')
+                            emotion_data[emotion] = float(percentage.strip('%'))
+
+                    st.title("Emotion Distribution")
+                    plot_emotion_pie_chart(emotion_data)
 
 if __name__ == '__main__':
     main()
-
