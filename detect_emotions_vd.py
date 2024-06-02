@@ -2,6 +2,7 @@ import cv2
 from tensorflow.keras.models import load_model
 import numpy as np
 import os
+import streamlit as st
 
 def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
     st.write("Im on the function")

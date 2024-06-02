@@ -24,10 +24,6 @@ try:
 except Exception as e:
     st.error(f"Error loading emotion detection model: {e}")
 
-# try:
-#     eye_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-# except Exception as e:
-#     st.error(f"Error loading eye predictor model: {e}")
 
 # Définir les émotions
 EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
@@ -62,40 +58,6 @@ def detect_faces(our_image):
         st.error(f"Error detecting faces: {e}")
         return None, None
 
-# def detect_eyes(our_image):
-#     # Initialize the face detector and eye predictor
-#     face_detector = dlib.get_frontal_face_detector()
-#     eye_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-    
-#     # Convert the image to BGR format
-#     img = np.array(our_image.convert('RGB'))
-#     img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    
-#     # Convert the image to grayscale
-#     gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
-    
-#     # Detect faces in the grayscale image
-#     faces = face_detector(gray)
-    
-#     # Copy the original image to draw eyes on it
-#     img_with_eyes = img_bgr.copy()
-    
-#     # Loop through each detected face
-#     for face in faces:
-#         # Detect landmarks for the face
-#         landmarks = eye_predictor(gray, face)
-        
-#         # Loop through each landmark corresponding to eyes
-#         for n in range(36, 48):  # Landmark indices for eyes
-#             # Get the (x, y) coordinates of the landmark
-#             x, y = landmarks.part(n).x, landmarks.part(n).y
-#             # Draw a green circle at the landmark position
-#             cv2.circle(img_with_eyes, (x, y), 2, (0, 255, 0), -1)
-    
-#     # Convert the image back to RGB format
-#     img_with_eyes_rgb = cv2.cvtColor(img_with_eyes, cv2.COLOR_BGR2RGB)
-    
-#     return img_with_eyes_rgb
 
 def detect_emotions(our_image):
     new_img = np.array(our_image.convert('RGB'))
