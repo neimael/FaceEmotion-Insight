@@ -128,6 +128,46 @@ def upload_video():
     else:
         return None, None, None, None
 
+def get_recommendations(emotion_data):
+    predominant_emotion = max(emotion_data, key=emotion_data.get)
+    recommendations = {
+        "happy": {
+            "message": "😊 Students are mostly happy. Continue using engaging and interactive activities to maintain this positive environment.",
+            "activities": ["Organize fun group projects", "Introduce gamified learning activities", "Celebrate achievements with small rewards"]
+        },
+        "sad": {
+            "message": "😢 Some students seem sad. Consider providing additional support, such as counseling services, and creating a more inclusive and supportive classroom environment.",
+            "activities": ["Set up peer support groups", "Implement mindfulness and relaxation exercises", "Have one-on-one check-ins with students"]
+        },
+        "angry": {
+            "message": "😡 There is a level of anger detected. Try addressing any potential conflicts or sources of frustration. Encouraging open communication and conflict resolution activities might help.",
+            "activities": ["Hold open forums for students to express concerns", "Introduce conflict resolution workshops", "Implement stress-relief activities like physical exercises or art therapy"]
+        },
+        "surprised": {
+            "message": "😲 Students are frequently surprised. This could be a sign of either positive engagement or confusion. Ensure that the surprises are educational and not confusing.",
+            "activities": ["Use surprise quizzes to keep engagement high", "Introduce unexpected but relevant educational videos", "Ensure clarity in instructions to avoid confusion"]
+        },
+        "scared": {
+            "message": "😨 Fear is prevalent. It may be helpful to create a safer and more predictable classroom environment, reduce high-stakes testing, and provide reassurance.",
+            "activities": ["Create a more predictable classroom routine", "Provide positive reinforcement and reassurance", "Implement team-building exercises to build trust"]
+        },
+        "disgust": {
+            "message": "🤢 Disgust is noted. Evaluate if there's anything in the content or classroom environment that could be causing this reaction. Address any identified issues promptly.",
+            "activities": ["Gather feedback to identify sources of discomfort", "Introduce more engaging and appealing materials", "Promote a positive and respectful classroom culture"]
+        },
+        "neutral": {
+            "message": "😐 Neutral emotions dominate. This might indicate a need for more dynamic and engaging teaching methods to foster a more active learning environment.",
+            "activities": ["Incorporate interactive activities like debates and group work", "Use multimedia resources to enhance lessons", "Encourage student-led projects to boost engagement"]
+        }
+    }
+
+    recommendation = recommendations.get(predominant_emotion, {
+        "message": "Keep monitoring the emotions of the students and adjust your teaching strategies as necessary.",
+        "activities": []
+    })
+
+    return recommendation["message"], recommendation["activities"]
+
 def main():
     """FaceEmotion Insight 😊"""
     st.title("FaceEmotion Insight 😊")
@@ -260,6 +300,17 @@ def main():
 
                     st.title("Emotion Distribution")
                     plot_emotion_pie_chart(emotion_data)
+
+                    # Display recommendations based on emotions
+                    st.title("Recommendations for Teachers")
+                    recommendation_message, recommendation_activities = get_recommendations(emotion_data)
+                    st.write(recommendation_message)
+                    if recommendation_activities:
+                        st.write("### Suggested Activities:")
+                        for activity in recommendation_activities:
+                            st.write(f"- {activity}")
+                    else:
+                        st.error(f"Emotion data file not found: {emotion_file_path}")
 
 if __name__ == '__main__':
     main()
