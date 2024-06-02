@@ -241,7 +241,7 @@ def main():
             output_extracted = f"Extracted_images/{video_name}"  # Output directory
             output_emotions = f"Emotions_detected/{video_name}"
             output_emotions_vd = "Emotions_videos"
-            output_emotions_vd_ld = f"Emotions_videos/{video_name_with_extension}"
+            # output_emotions_vd_ld = f"Emotions_videos/{video_name_with_extension}"
             output_data_folder = 'Data_emotions'
             
             status_placeholder = st.empty()
@@ -277,15 +277,15 @@ def main():
 
                 # Show resulting video
                 st.title("Resulting Video")
-                # video_file_path = os.path.join(output_emotions_vd, f'{video_name}.mp4')
-                emotion_video_path = output_emotions_vd_ld
+                video_file_path = os.path.join(output_emotions_vd, f'{video_name}.avi')
+                # emotion_video_path = output_emotions_vd_ld
 
                 # video = os.listdir(output_emotions_vd_ld)
 
-                if os.path.exists(emotion_video_path):
-                    st.video(emotion_video_path)
+                if os.path.exists(video_file_path):
+                    st.video(video_file_path)
                 else:
-                    st.error(f"Video file not found: {emotion_video_path}")
+                    st.error(f"Video file not found: {video_file_path}")
 
                 # Read emotion data from text file and display pie chart
                 emotion_data = {}
