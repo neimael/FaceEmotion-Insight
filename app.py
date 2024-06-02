@@ -222,8 +222,7 @@ def main():
                 import Detect_emotions as emotions
                 import detect_emotions_vd as emotions_vd
                 emotions.process_images(output_extracted, output_emotions)
-                st.write("Now we will analyze the vd")
-                emotions_vd.analyze_video_emotions(video_path, output_emotions_vd, output_data_folder)
+                # emotions_vd.analyze_video_emotions(video_path, output_emotions_vd, output_data_folder)
                 
                 status_placeholder.empty()
 
@@ -240,7 +239,7 @@ def main():
 
                 # Show resulting video
                 st.title("Resulting Video")
-                video_file_path = os.path.join(output_emotions_vd, f'{video_name}.avi')
+                video_file_path = os.path.join(output_emotions_vd, f'{video_name}.mp4')
                 # emotion_video_path = output_emotions_vd_ld
 
                 # video = os.listdir(output_emotions_vd_ld)

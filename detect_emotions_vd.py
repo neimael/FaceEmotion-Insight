@@ -2,10 +2,8 @@ import cv2
 from tensorflow.keras.models import load_model
 import numpy as np
 import os
-import streamlit as st
 
 def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
-    st.write("Im on the function")
     # Charger le modèle de détection d'émotions (FER2013)
     emotion_model = load_model('fer2013_mini_XCEPTION.102-0.66.hdf5', compile=False)
 
@@ -17,8 +15,6 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
 
     # Fonction pour détecter les émotions sur une image
     def detect_emotions(image):
-        st.write("Im on the detect_emotions function")
-
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
 
@@ -48,8 +44,6 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
             cv2.putText(image, emotion_label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 2)
 
         return image, emotions_count
-    
-    st.write("Im out function detect_emotions")
 
     # Charger la vidéo
     cap = cv2.VideoCapture(video_path)
@@ -62,18 +56,15 @@ def analyze_video_emotions(video_path, output_video_folder, output_data_folder):
     # Créer les dossiers pour enregistrer la vidéo modifiée et les fichiers de données d'émotion
     if not os.path.exists(output_video_folder):
         os.makedirs(output_video_folder)
-        st.write("Folder created")
     if not os.path.exists(output_data_folder):
         os.makedirs(output_data_folder)
 
     # Obtenir le nom de fichier de la vidéo d'origine
     video_name = os.path.splitext(os.path.basename(video_path))[0]
 
-    output_path = os.path.join(output_video_folder, f'{video_name}.avi')  # Use .avi extension
-    fourcc = cv2.VideoWriter_fourcc(*'MJPG')  # Using Motion JPEG codec
-    st.write("Im saving vd .avi")
-
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    # Créer un objet VideoWriter pour enregistrer la vidéo modifiée dans le dossier de sortie avec le même nom de fichier
+    output_path = os.path.join(output_video_folder, f'{video_name}.mp4')
+    out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'avc1'), fps, (width, height))
 
     # Initialiser le dictionnaire pour compter les émotions
     total_emotions_count = {emotion: 0 for emotion in EMOTIONS}
