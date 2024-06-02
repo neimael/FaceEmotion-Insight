@@ -260,6 +260,7 @@ def main():
                 import Detect_emotions as emotions
                 import detect_emotions_vd as emotions_vd
                 emotions.process_images(output_extracted, output_emotions)
+                st.write("Now we will analyze the vd")
                 emotions_vd.analyze_video_emotions(video_path, output_emotions_vd, output_data_folder)
                 
                 status_placeholder.empty()
